@@ -1,8 +1,3 @@
-# App Clips for iOS: Getting Started
-Download Materials for the `App Clips for iOS: Getting Started` tutorial I wrote for [https://www.raywenderlich.com/](https://www.raywenderlich.com/14455571-app-clips-for-ios-getting-started).
-
-## License
-```
 /// Copyright (c) 2020 Razeware LLC
 ///
 /// Permission is hereby granted, free of charge, to any person obtaining a copy
@@ -34,4 +29,19 @@ Download Materials for the `App Clips for iOS: Getting Started` tutorial I wrote
 /// LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 /// OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 /// THE SOFTWARE.
-```
+
+import UIKit
+import SwiftUI
+
+class SceneDelegate: UIResponder, UIWindowSceneDelegate {
+  var window: UIWindow?
+
+  func scene(_ scene: UIScene, willConnectTo session: UISceneSession, options connectionOptions: UIScene.ConnectionOptions) {
+    if let windowScene = scene as? UIWindowScene {
+      let window = UIWindow(windowScene: windowScene)
+      window.rootViewController = UIHostingController(rootView: ContentView())
+      self.window = window
+      window.makeKeyAndVisible()
+    }
+  }
+}

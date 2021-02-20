@@ -1,8 +1,3 @@
-# App Clips for iOS: Getting Started
-Download Materials for the `App Clips for iOS: Getting Started` tutorial I wrote for [https://www.raywenderlich.com/](https://www.raywenderlich.com/14455571-app-clips-for-ios-getting-started).
-
-## License
-```
 /// Copyright (c) 2020 Razeware LLC
 ///
 /// Permission is hereby granted, free of charge, to any person obtaining a copy
@@ -34,4 +29,68 @@ Download Materials for the `App Clips for iOS: Getting Started` tutorial I wrote
 /// LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 /// OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 /// THE SOFTWARE.
-```
+
+import SwiftUI
+import PassKit
+struct DetailView: View {
+  @State private var orderPlaced = false
+  @State private var showWarningAlert = false
+
+  #if APPCLIP
+  @EnvironmentObject private var model: SwiftyLemonadeClipModel
+  #endif
+
+  let lemonade: Lemonade
+
+  private func placeOrder() {
+    #if APPCLIP
+    guard model.paymentAllowed else {
+      showWarningAlert = true
+      return
+    }
+    #endif
+
+    orderPlaced = true
+  }
+
+  var body: some View {
+    VStack {
+      Image(lemonade.imageName)
+        .resizable()
+        .frame(maxWidth: 300, maxHeight: 600)
+        .aspectRatio(contentMode: .fit)
+      Text(lemonade.title)
+        .font(.headline)
+      Divider()
+      Text("\(lemonade.calories) Calories")
+        .font(.subheadline)
+        .padding(15)
+      // swiftlint:disable:next multiple_closures_with_trailing_closure
+      Button(action: { placeOrder() }) {
+        Text("Place Order")
+          .foregroundColor(.white)
+      }
+      .frame(minWidth: 100, maxWidth: 400)
+      .frame(height: 45)
+      .background(Color.black)
+    }
+    .padding()
+    .navigationBarTitle(Text(lemonade.title), displayMode: .inline)
+    .sheet(isPresented: $orderPlaced, onDismiss: nil) {
+      OrderPlacedView(lemonade: lemonade)
+    }
+    .alert(isPresented: $showWarningAlert) {
+      Alert(
+        title: Text("Payment Disabled"),
+        message: Text("The QR was scanned at an invalid location."),
+        dismissButton: .default(Text("OK"))
+      )
+    }
+  }
+}
+
+struct DetailView_Previews: PreviewProvider {
+  static var previews: some View {
+    DetailView(lemonade: standData[0].menu[0])
+  }
+}
